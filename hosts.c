@@ -43,31 +43,15 @@ static char *lookup_alias(const char *alias)
 {
 	char *ret = NULL;
 	FILE *hosts_file = NULL;
-	char *home_env = getenv("HOME");
-	char *fname = "/.hosts";
+	char *fname = getenv("HOSTS_FILE");
 	char *line = NULL;
 	size_t line_len;
 
 	if (!alias)
 		return NULL;
 
-	if (home_env) {
-		/* thread safety paranoia as env variables are global */
-		home_env = strdup(home_env);
-	}
-
-	if (home_env) {
-		char *tmp;
-		if (NULL != (tmp = realloc(home_env, strlen(home_env)+strlen(fname)+1))) {
-			home_env = tmp;
-			strcat(home_env, fname);
-			fname = home_env;
-		}
-	}
-
 	hosts_file = fopen(fname, "r");
 	if (!hosts_file) {
-		free(home_env); /* NULL or strdup or realloc */
 		return NULL;
 	}
 
@@ -80,7 +64,6 @@ static char *lookup_alias(const char *alias)
 	}
 	free(line);
 	fclose(hosts_file);
-	free(home_env);
 	return ret;
 
 }
@@ -183,8 +166,15 @@ static int test_hosts()
 	ASSERT(find_alias_test("", "sometest")==NULL);
 	ASSERT(find_alias_test("", "")==NULL);
 
-	ASSERT(setenv("HOME", getenv("PWD"), 1)==0);
-	hosts = fopen(".hosts", "w");
+	char *pwd = getenv("PWD");
+	size_t len = strlen(pwd) + strlen("/.hosts") + 1;
+	char *host_path = malloc(len);
+	memset(host_path, 0, len);
+	strcat(host_path, pwd);
+	strcat(host_path, "/.hosts");
+	ASSERT(setenv("HOSTS_FILE", host_path, 1)==0);
+	hosts = fopen(host_path, "w");
+	free(host_path);
 	ASSERT(hosts != NULL);
 
 	ASSERT(fwrite(test_hosts_contents, 1, sizeof(test_hosts_contents), hosts)
