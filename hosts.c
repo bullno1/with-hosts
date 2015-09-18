@@ -33,7 +33,7 @@ static char *find_alias_in_line(char *hosts_line, const char *alias)
 
 	while (NULL != (token = strtok_r(NULL, DELIMITERS, &strtok_saveptr))) {
 		if (strcmp(alias, token) == 0)
-			return ret;	
+			return ret;
 	}
 
 	return NULL;
@@ -95,7 +95,7 @@ ret_type fun_name(__VA_ARGS__) \
  *  ret_type: type of value returned
  *  name: name of the variable which will have its value looked up in hosts file
  *  ...: all arguments with their types, including one with name as above
- * FUN_END: 
+ * FUN_END:
  *  ...: all arguments without their types, keep the order.
  */
 
@@ -131,7 +131,7 @@ static char *lookup_alias_test(const char *alias)
 {
 	static char writable_test_buffer[128];
 	char *tmp = lookup_alias(alias);
-	
+
 	if (tmp != NULL) {
 		strncpy(writable_test_buffer, tmp, sizeof(writable_test_buffer)-1);
 		free(tmp);
