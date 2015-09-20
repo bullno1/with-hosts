@@ -1,4 +1,4 @@
-# with-hosts -- Override `hosts` file for a single process
+# with-hosts -- Override `hosts` file for a single process ![travis-ci](https://api.travis-ci.org/bullno1/with-hosts.svg)
 
 ## Example
 
